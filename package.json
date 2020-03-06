@@ -1,0 +1,31 @@
+{
+  "name": "stars-from-github",
+  "version": "1.0.0",
+  "description": "Grab any GitHub user's stars as a CSV file",
+  "main": "stars-from-github.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zmertens/stars-from-github.git"
+  },
+  "keywords": [
+    "nodejs",
+    "CSV",
+    "tool",
+    "script",
+    "simple"
+  ],
+  "author": "zmertens",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/zmertens/stars-from-github/issues"
+  },
+  "homepage": "https://github.com/zmertens/stars-from-github#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "request": "^2.88.2",
+    "yargs": "^15.1.0"
+  }
+}
