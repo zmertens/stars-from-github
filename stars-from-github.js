@@ -1,29 +1,34 @@
-// Grab any GitHub user's stars
+// Grab a GitHub user's starred repos and converts to CSV file
 
 const request = require('request');
-const yargs = require('yargs');
+const argv = require('yargs').argv;
+const fs = require('fs');
 
+let gitHubUser = argv.u;
+let gitHubApi = `https://api.github.com/users/${gitHubUser}/starred`;
+const csvFile = `${gitHubUser}-starred.csv`;
+console.log(`api call: ${gitHubApi}\r\nWriting to file: ${csvFile}`);
 
-const gitHubApi = 'https://api.github.com/users/';
+let requestOptions = {
+  url: gitHubApi,
+  headers: { 'User-Agent': 'request' }
+};
 
-let gitHubUser = yargs.args(arg[0]);
+// First: Make the GET request to GitHub API
+let responseCsv = '';
+let apiCallback = (error, response, body) => {
+  if (!error && response.statusCode == 200) {
+    let info = JSON.parse(body);
+    // console.log(info);
+    for (let count of info) {
+      responseCsv += count.git_url + ', ' + count.stargazers_count + '\r\n';
+      console.log(responseCsv);
+    }
+  } else {
+    console.error(error);
+  }
+}
 
-request(`${gitHubApi}/${gitHubUser}/starred`, function (error, response, body) {
-  console.error('error:', error);
-  console.log('statusCode:', response && response.statusCode);
-  console.log('body:', body);
-});
-
-// let userStarred = this.request.get(`${gitHubApi}/${gitHubUser}/starred`);
-
-
-// // Convert the return object into a CSV file
-// let starredList = [];
-
-// for (let i = 0; i < userStarred.length; i += 1) {
-// 	console.log(userStarred[i]);
-//	starredList.push(userStarred[i].url + ', ' + userStarred[i].data + '\n');
-// }
-
-
+request(requestOptions, apiCallback)
+  .pipe(fs.createWriteStream(csvFile, responseCsv));
 
