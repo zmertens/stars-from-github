@@ -1,34 +1,34 @@
 // Grab a GitHub user's starred repos and converts to CSV file
 
-const request = require('request');
+const http = require('https')
 const argv = require('yargs').argv;
 const fs = require('fs');
+const superagent = require('superagent')
 
 let gitHubUser = argv.u;
 let gitHubApi = `https://api.github.com/users/${gitHubUser}/starred`;
 const csvFile = `${gitHubUser}-starred.csv`;
 console.log(`api call: ${gitHubApi}\r\nWriting to file: ${csvFile}`);
 
-let requestOptions = {
-  url: gitHubApi,
-  headers: { 'User-Agent': 'request' }
-};
-
 // First: Make the GET request to GitHub API
-let responseCsv = '';
-let apiCallback = (error, response, body) => {
-  if (!error && response.statusCode == 200) {
-    let info = JSON.parse(body);
-    // console.log(info);
-    for (let count of info) {
-      responseCsv += count.git_url + ', ' + count.stargazers_count + '\r\n';
-      console.log(responseCsv);
+superagent.get(gitHubApi)
+  .set('User-Agent', 'request')
+  .end((err, res) => {
+    if (err) { 
+      return console.log(err);
     }
-  } else {
-    console.error(error);
-  }
-}
 
-request(requestOptions, apiCallback)
-  .pipe(fs.createWriteStream(csvFile, responseCsv));
+    // console.log(res.body[0])
+    let responseCsv = 'HTML URL, Stargazers Count\r\n'
+    for (star = 0; star < res.body.length; star += 1) {
+      console.log(`res.body[${star}]: ${JSON.stringify(res.body[star].stargazers_count)}`)
+      responseCsv += JSON.stringify(res.body[star].html_url) + ', ' + res.body[star].stargazers_count + '\r\n'
+    }
+
+    fs.writeFile(csvFile, responseCsv, (error) => {
+      if (error) {
+        console.error(error)
+      }
+    })
+  });
 

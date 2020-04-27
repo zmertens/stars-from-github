@@ -4,7 +4,7 @@
   "description": "Grab any GitHub user's stars as a CSV file",
   "main": "stars-from-github.js",
   "scripts": {
-    "test": "test"
+    "test": "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -23,9 +23,11 @@
     "url": "https://github.com/zmertens/stars-from-github/issues"
   },
   "homepage": "https://github.com/zmertens/stars-from-github#readme",
-  "dependencies": {},
-  "devDependencies": {
-    "request": "^2.88.2",
+  "dependencies": {
+    "superagent": "^5.2.2",
     "yargs": "^15.1.0"
+  },
+  "devDependencies": {
+    "jest": "^25.4.0"
   }
 }
