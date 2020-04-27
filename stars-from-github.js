@@ -1,34 +1,25 @@
-// Grab a GitHub user's starred repos and converts to CSV file
-
-const http = require('https')
+/**
+ * Grab a GitHub user's starred repos and converts to CSV file
+ * @github github.com/zmertens/stars-from-github
+ *
+ */ 
 const argv = require('yargs').argv;
 const fs = require('fs');
-const superagent = require('superagent')
+const getStars = require('./get-stars')
 
 let gitHubUser = argv.u;
-let gitHubApi = `https://api.github.com/users/${gitHubUser}/starred`;
-const csvFile = `${gitHubUser}-starred.csv`;
-console.log(`api call: ${gitHubApi}\r\nWriting to file: ${csvFile}`);
 
-// First: Make the GET request to GitHub API
-superagent.get(gitHubApi)
-  .set('User-Agent', 'request')
-  .end((err, res) => {
-    if (err) { 
-      return console.log(err);
-    }
+getStars(gitHubUser).then((result) => {
+    const csvFile = `${gitHubUser}-starred.csv`;
 
-    // console.log(res.body[0])
-    let responseCsv = 'HTML URL, Stargazers Count\r\n'
-    for (star = 0; star < res.body.length; star += 1) {
-      console.log(`res.body[${star}]: ${JSON.stringify(res.body[star].stargazers_count)}`)
-      responseCsv += JSON.stringify(res.body[star].html_url) + ', ' + res.body[star].stargazers_count + '\r\n'
-    }
+    console.debug(`Writing to file: ${csvFile}`)
 
-    fs.writeFile(csvFile, responseCsv, (error) => {
-      if (error) {
-        console.error(error)
-      }
+    fs.writeFile(csvFile, result, (error) => {
+        if (error) {
+            console.error(error)
+        }
     })
-  });
+}).catch((error) => {
+    console.log(error)
+})
 
