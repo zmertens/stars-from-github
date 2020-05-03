@@ -4,6 +4,7 @@
   "description": "Grab any GitHub user's stars as a CSV file",
   "main": "stars-from-github.js",
   "scripts": {
+    "start": "node stars-from-github.js",
     "test": "jest --watch"
   },
   "repository": {
@@ -28,6 +29,7 @@
     "yargs": "^15.1.0"
   },
   "devDependencies": {
-    "jest": "^25.4.0"
+    "jest": "^25.4.0",
+    "supertest": "^4.0.2"
   }
 }
